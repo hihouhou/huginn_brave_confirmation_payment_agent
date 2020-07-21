@@ -1,0 +1,4 @@
+require 'huginn_agent'
+
+#HuginnAgent.load 'huginn_brave_confirmation_payment_agent/concerns/my_agent_concern'
+HuginnAgent.register 'huginn_brave_confirmation_payment_agent/brave_confirmation_payment_agent'
