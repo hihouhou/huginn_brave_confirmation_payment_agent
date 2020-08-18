@@ -7,11 +7,15 @@ module Agents
 
     description do
       <<-MD
-      The Github notification agent fetches notifications and creates an event by notification.
+      The Brave Confirmation PaymentAgent agent fetches confirmations from brave server and creates event.
 
       `changes_only` is used for only create an event for the change not all the payload.
 
       `wallet_id` is found at brave://rewards-internals/.
+
+      `digest` is found at brave://rewards-internals/.
+
+      `signature` is found at brave://rewards-internals/.
 
       `expected_receive_period_in_days` is used to determine if the Agent is working. Set it to the maximum number of days
       that you anticipate passing without this Agent receiving an incoming Event.
@@ -93,14 +97,6 @@ module Agents
       request.content_type = "application/json"
       request["digest"] = "SHA-256=#{interpolated['digest']}"
       request["signature"] = "keyId=\"primary\",algorithm=\"ed25519\",headers=\"digest\",signature=\"#{interpolated['signature']}\""
-#      request.body = JSON.dump({
-#        "type" => "A",
-#        "name" => "www",
-#        "data" => "162.10.66.0",
-#        "priority" => nil,
-#        "port" => nil,
-#        "weight" => nil
-#      })
       
       req_options = {
         use_ssl: uri.scheme == "https",
@@ -110,8 +106,9 @@ module Agents
         http.request(request)
       end
       
-      log response.code
       log response.body
+
+      log "request  status : #{response.code}"
 
       payload = JSON.parse(response.body)
 
