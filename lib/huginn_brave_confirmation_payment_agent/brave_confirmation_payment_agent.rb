@@ -97,6 +97,7 @@ module Agents
       request.content_type = "application/json"
       request["digest"] = "SHA-256=#{interpolated['digest']}"
       request["signature"] = "keyId=\"primary\",algorithm=\"ed25519\",headers=\"digest\",signature=\"#{interpolated['signature']}\""
+      request["User-Agent"] = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0 Fuck You, it's not fair"
       
       req_options = {
         use_ssl: uri.scheme == "https",
@@ -140,7 +141,7 @@ module Agents
           memory['last_status'] = payload.to_s
         end
       else
-        create_event payload: payload
+        create_event payload: payload.each_with_index.to_h
         if payload.to_s != memory['last_status']
           memory['last_status'] = payload.to_s
         end
