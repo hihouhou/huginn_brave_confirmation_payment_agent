@@ -11,6 +11,8 @@ module Agents
 
       `changes_only` is used for only create an event for the change not all the payload.
 
+      `debug` is used to verbose mode.
+
       `wallet_id` is found at brave://rewards-internals/.
 
       `digest` is found at brave://rewards-internals/.
@@ -33,6 +35,7 @@ module Agents
 
     def default_options
       {
+        'debug' => 'false',
         'wallet_id' => '',
         'digest' => '',
         'expected_receive_period_in_days' => '2',
@@ -41,6 +44,7 @@ module Agents
       }
     end
 
+    form_configurable :debug, type: :boolean
     form_configurable :expected_receive_period_in_days, type: :string
     form_configurable :wallet_id, type: :string
     form_configurable :digest, type: :string
@@ -50,6 +54,10 @@ module Agents
     def validate_options
       unless options['wallet_id'].present?
         errors.add(:base, "wallet_id is a required field")
+      end
+
+      if options.has_key?('debug') && boolify(options['debug']).nil?
+        errors.add(:base, "if provided, debug must be true or false")
       end
 
       unless options['digest'].present?
@@ -96,11 +104,13 @@ module Agents
         http.request(request)
       end
       
-      log response.body
-
       log "request  status : #{response.code}"
 
       payload = JSON.parse(response.body)
+
+      if interpolated['debug'] == 'true'
+        log payload
+      end
 
       unless options['wallet_id'].present?
         errors.add(:base, "wallet_id is a required field")
