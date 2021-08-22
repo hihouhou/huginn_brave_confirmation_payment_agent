@@ -26,11 +26,12 @@ module Agents
 
     event_description <<-MD
       Events look like this:
-        {
-          "month": "2020-07",
-          "transactionCount": "120070",
-          "balance": "6000.35"
-        }
+
+          {
+            "month": "2020-07",
+            "transactionCount": "120070",
+            "balance": "6000.35"
+          }
     MD
 
     def default_options
